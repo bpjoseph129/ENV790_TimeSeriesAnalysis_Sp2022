@@ -1,7 +1,7 @@
 ---
 title: "ENV 790.30 - Time Series Analysis for Energy Data | Spring 2022"
 subtitle: "Assignment 1 - Due date 01/14/22"
-author: "Student Name"
+author: "Ben Joseph"
 output: pdf_document
 geometry: margin=2.54cm
 ---
@@ -19,12 +19,14 @@ When you have completed the assignment, **Knit** the text and code into a single
 
 Q1. What are your previous experiences with time series analysis, R, and Git? 
 
-> Answer: 
+> Answer: As an MPP student, I took two semesters of Econometrics. We did about 1-2 weeks on time series analysis, enough to get a basic understanding of the key concepts. We recreated a study using TSA in Stata. I am excited to explore the topic more as it is an important part of analyzing key energy issues.
+
+> I have no prior experience in R and Git. I am excited to learn!
 
 
 Q2. Provide a link below to your forked course repository in GitHub. Make sure you have pulled all recent changes from the course repository and that you have updated your course README file as instructed on the recorded video "Getting started with Git and Github". 
 
-> Answer: 
+> Answer: https://github.com/bpjoseph129/ENV790_TimeSeriesAnalysis_Sp2022
 
 
 Q3. For this part we just want to see the path to your R project. No need to do anything. The output will be automatically generated once you knit you file. 
