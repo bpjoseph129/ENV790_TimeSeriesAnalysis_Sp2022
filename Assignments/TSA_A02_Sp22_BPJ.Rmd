@@ -17,36 +17,41 @@ When you have completed the assignment, **Knit** the text and code into a single
 
 ## R packages
 
-R packages needed for this assignment:"forecast","tseries", and "dplyr". Install these packages, if you haven't done yet. Do not forget to load them before running your script, since they are NOT default packages.\\
+R packages needed for this assignment:"forecast","tseries", and "dplyr". Install these packages, if you haven't done yet. Do not forget to load them before running your script, since they are NOT default packages.
 
 ```{r install packages}
 #Load/install required package here
-install.packages("forecast")
-install.packages("tseries")
-install.packages("dplyr")
+#install.packages("forecast")
+#install.packages("tseries")
+#install.packages("dplyr")
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
 ```
 ```{r}
 library(forecast)
 library(dplyr)
 library(tseries)
-
+library(tidyverse)
 ```
+
 
 
 ## Data set information  
 
-Consider the data provided in the spreadsheet "Table_10.1_Renewable_Energy_Production_and_Consumption_by_Source.xlsx" on our **Data** folder. The data comes from the US Energy Information and Administration and corresponds to the January 2022 Monthly Energy Review. The spreadsheet is ready to be used. Use the command $read.table()$ to import the data in R or $panda.read\_excel()$ in Python (note that you will need to import pandas package). }
+Consider the data provided in the spreadsheet "Table_10.1_Renewable_Energy_Production_and_
+Consumption_by_Source.xlsx" on our **Data** folder. The data comes from the US Energy Information and Administration and corresponds to the January 2022 Monthly Energy Review. The spreadsheet is ready to be used. Use the command $read.table()$ to import the data in R or $panda.read\_excel()$ in Python (note that you will need to import pandas package). }
 
 ```{r import data}
 library(readxl)
-df <- read_excel("./Data/Table_10.1_Renewable_Energy_Production_and_Consumption_by_Source.xlsx", sheet = 2, col_names = TRUE, skip =10, na="Not Available")
+df <- read_excel("./Data/Table_10.1_Renewable_Energy_Production_and_Consumption_by_Source.xlsx"
+   , sheet = 1, col_names = TRUE, skip =10, na="Not Available")
 ```
 
 ## Question 1
 You will work only with the following columns: Total Biomass Energy Production, Total Renewable Energy Production, Hydroelectric Power Consumption. Create a data frame structure with these three time series only. Use the command head() to verify your data.
 
 ```{r Q1: Eliminate Extra Columns}
-df2 <- df[2:73,4:6]
+df2 <- df[2:586,4:6]
 head(df2,10)
 ```
 
@@ -55,24 +60,30 @@ head(df2,10)
 Transform your data frame in a time series object and specify the starting point and frequency of the time series using the function ts().
 
 ```{r Q2: Create Time Series Object}
+# I had to convert data to numeric to transform it to a time series object
 df2$`Total Biomass Energy Production`<- as.numeric(df2$`Total Biomass Energy Production`)
 df2$`Total Renewable Energy Production`<- as.numeric(df2$`Total Renewable Energy Production`)
 df2$`Hydroelectric Power Consumption`<-as.numeric(df2$`Hydroelectric Power Consumption`)
-ts <- ts(data = df2, start = 1949, frequency = 1)
-ts
+ts <- ts(data = df2, start = 1973, frequency = 12)
+head(ts,10)
 ```
 
 
 ## Question 3
 Compute mean and standard deviation for these three series.
 
-```{r Q3: Summary Statistics}
+```{r Q3: Summary}
+# I had originally written out print functions that present the mean and sd for 
+# each function but the code and outputs were so long they ran off the page so I 
+# found code that creates a table for mean and sd and commented out the original code
 
-print(paste0("The mean of annual biomass energy production is ",round(mean(df2$`Total Biomass Energy Production`),2)," trillion Btu and the standard deviation is ",round(sd(df2$`Total Biomass Energy Production`),2)," trillion Btu."))
+#print(paste0("The mean of annual biomass energy production is ",round(mean(df2$`Total Biomass Energy Production`),2)," trillion Btu and the standard deviation is ",round(sd(df2$`Total Biomass Energy Production`),2)," trillion Btu.")
+#print(paste0("The mean of annual reneweable energy production is ", round(mean(df2$`Total Renewable Energy Production`),2)," trillion Btu and the standard deviation is ",round(sd(df2$`Total Renewable Energy Production`),2)," trillion Btu."))
+#print(paste0("The mean of annual hydroelectric power consumption is ", round(mean(df2$`Hydroelectric Power Consumption`),2)," trillion Btu and the standard deviation is ",round(sd(df2$`Hydroelectric Power Consumption`),2)," trillion Btu."))
 
-print(paste0("The mean of annual reneweable energy production is ",round(mean(df2$`Total Renewable Energy Production`),2)," trillion Btu and the standard deviation is ",round(sd(df2$`Total Renewable Energy Production`),2)," trillion Btu."))
-
-print(paste0("The mean of annual hydroelectric power consumption is ",round(mean(df2$`Hydroelectric Power Consumption`),2)," trillion Btu and the standard deviation is ",round(sd(df2$`Hydroelectric Power Consumption`),2)," trillion Btu."))
+#code source https://stackoverflow.com/questions/20794284/means-and-sd-for-columns-in-a-dataframe-with-na-values
+as.data.frame( t(sapply(ts, function(cl) list(Means=mean(cl,na.rm=TRUE), 
+    StandardDeviation=sd(cl,na.rm=TRUE)))))
 
 ```
 
@@ -83,25 +94,36 @@ Display and interpret the time series plot for each of these variables. Try to m
 ```{r Q4: Plot Data}
 
 #Biomass Plot
-plot(ts[,1], col="blue", ylab="Trillions of Btu", main="Biomass Energy Production", xlab="Year")
+plot(ts[,1], col="blue", ylab="Trillions of Btu", main="Biomass Energy Production", 
+     xlab="Year")
 abline(h=mean(ts[,1]),col="pink")
-legend("topleft",legend=c("Annual Production","Mean"), lty=c("solid","solid"), col = c("blue","pink"))
+legend("topleft",legend=c("Annual Production","Mean"), lty=c("solid","solid"), 
+       col = c("blue","pink"))
 
 #Renewable Plot
-plot(ts[,2], col="green", ylab="Trillions of Btu", main="Renewable Energy Production", xlab="Year")
+plot(ts[,2], col="green", ylab="Trillions of Btu", main="Renewable Energy Production", 
+     xlab="Year")
 abline(h=mean(ts[,2]),col="orange")
-legend("topleft",legend=c("Annual Production","Mean"), lty=c("solid","solid"), col = c("green","orange"))
+legend("topleft",legend=c("Annual Production","Mean"), lty=c("solid","solid"), 
+       col = c("green","orange"))
 
 #Hydro Plot
-plot(ts[,3], col="purple", ylab="Trillions of Btu", main="Hydroelectric Consumption", xlab="Year")
+plot(ts[,3], col="purple", ylab="Trillions of Btu", main="Hydroelectric Consumption", 
+     xlab="Year")
 abline(h=mean(ts[,3]),col="red")
-legend("topleft",legend=c("Annual Consumption","Mean"), lty=c("solid","solid"), col = c("purple","red"))
+legend("topleft",legend=c("Annual Consumption","Mean"), lty=c("solid","solid"), 
+       col = c("purple","red"))
 
-#Adding biomass and reneable energy lines to hydro plot, renaming it, setting y limit to equal max value across three series and adding legend
-plot(ts[,3], col="purple", ylab="Trillions of Btu", main="Electricity Data", xlab="Year", ylim=c(0,(max(c(df2$`Total Biomass Energy Production`,df2$`Total Renewable Energy Production`,df2$`Hydroelectric Power Consumption`)))))
+#Adding biomass and renewable energy lines to hydro plot, renaming it, setting y limit to 
+#equal max value across three series and adding legend
+plot(ts[,3], col="purple", ylab="Trillions of Btu", main="Electricity Data", xlab="Year", 
+     ylim=c(0,(max(c(df2$`Total Biomass Energy Production`,df2$`Total Renewable Energy Production`,
+    df2$`Hydroelectric Power Consumption`)))))
 lines(ts[,1],col="blue")
 lines(ts[,2],col="green")
-legend("topleft",legend=c("Hydroelectric Consumptiion","Biomass Energy Productioin","Renewable Energy Production"), lty=c("solid","solid","solid"), col = c("purple","blue","green"))
+legend("topleft",legend=c("Hydroelectric Consumptiion","Biomass Energy Productioin",
+    "Renewable Energy Production"), lty=c("solid","solid","solid"), 
+    col = c("purple","blue","green"))
 
 ```
 
@@ -109,7 +131,12 @@ legend("topleft",legend=c("Hydroelectric Consumptiion","Biomass Energy Productio
 ## Question 5
 Compute the correlation between these three series. Are they significantly correlated? Explain your answer.
 
-```{r}
+# I used the cor.test function to test correlation between the three series. The values of interest are the correlation coefficient ("cor) and the p-value displayed in the output. The correlation coefficient shows the strength and direction of the correlation. The closer to 1, the stronger the positive correlation. The closer to -1, the stronger the negative correlation. 
+# The p-value shows the probability of observing a correlation coefficient from a given sample that is at least as extreme as the observed correlation coefficient if we were to assume there is no correlation between the two series. If the p value is below a significance level of 5%, or .05, we assume that the observed correlation did not occur by chance, and that there is a statistically significant correlation between the series.
+
+# There is a strong positive correlation between biomass and renewable energy production with a correlation coefficient near 1 and a very small p value. There is a weaker, but still statistically significant correlation between biomass energy production and hydroelectric power consumption. There is no statistically significant correlation between renewable enery production and hydroelectric power production as evidenced by a p-value well above .05.  For exact values, see the outputs below for the three series being compared to each other, two at a time.
+
+```{r Q5: Correlation}
 print("Correllation analysis for Biomass Energy Production and Renewable Energy Production:")
 cor.test(ts[,1],ts[,2], use = "everything", method = c("pearson","kendall","spearman"))
 
@@ -120,21 +147,31 @@ print("Correllation analysis for Renewable Energy Production and Hydroelectric P
 cor.test(ts[,2],ts[,3], use = "everything", method = c("pearson","kendall","spearman"))
 ```
 
-The three series are all significantly positively correlated due to their correlation p-values beiing well below the .05 significance level. They all have positive correlaations with Biomass and Renewable Energy Production having the strongest correlation, near 1.
-
 ## Question 6
 Compute the autocorrelation function from lag 1 up to lag 40 for these three variables. What can you say about these plots? Do the three of them have the same behavior?
 
-```{r}
-getwd()
+# The Biomass and Renewable energy plots have similar behavior, starting at near 1 and fairly steadily declining to around .7 by lag 40. The Renewable Energy plot shows slight seasonal trend which makes sense because renewable energy tends to be weather depenent. The hydroelectric power consumption graph shows extreme seasonal variation with an overall slight downward trend. This makes sense because the availability of hydroelectric resources depends heeavily on the abundance of water which has seasonal elements like the presence of snow runoff in the spring and early summer. 
+
+```{r Q6: ACT}
+# first create 3 different time series for each key variable
+tsBio <- ts(data = df2$`Total Biomass Energy Production`, start = 1973, frequency = 1)
+tsRE <- ts(data = df2$`Total Renewable Energy Production`, start = 1949, frequency = 1)
+tsHydro <- ts(data = df2$`Hydroelectric Power Consumption`, start = 1949, frequency = 1)
+acfBio <- acf(tsBio, lag.max = 40, type = "correlation",plot=TRUE)
+acfRE <- acf(tsRE, lag.max = 40, type = "correlation", plot=TRUE)
+acfHydro <- acf(tsHydro, lag.max = 40, type = "correlation", plot=TRUE)
 ```
 
 
 ## Question 7
 Compute the partial autocorrelation function from lag 1 to lag 40 for these three variables. How these plots differ from the ones in Q6?
 
-```{r}
+# As expected, the partial autocorrelation values are the same at lag 1 as they were for the autocorrelation charts because there are no intermediary values. After, lag 1, PACF values hover around 0 for all three. The only times that the partial autocorreelation values cross the blue dotted lines that show significance levels is around lag 12 and 24 which again reflects the seasonality of these resources.
 
+```{r}
+pacf(tsBio, lag.max = 40, plot = T)
+pacf(tsRE, lag.max = 40, plot = T)
+pacf(tsHydro, lag.max = 40, plot = T)
 ```
 
 
