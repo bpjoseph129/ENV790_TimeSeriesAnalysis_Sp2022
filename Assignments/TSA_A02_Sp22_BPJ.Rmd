@@ -155,8 +155,8 @@ Compute the autocorrelation function from lag 1 up to lag 40 for these three var
 ```{r Q6: ACT}
 # first create 3 different time series for each key variable
 tsBio <- ts(data = df2$`Total Biomass Energy Production`, start = 1973, frequency = 1)
-tsRE <- ts(data = df2$`Total Renewable Energy Production`, start = 1949, frequency = 1)
-tsHydro <- ts(data = df2$`Hydroelectric Power Consumption`, start = 1949, frequency = 1)
+tsRE <- ts(data = df2$`Total Renewable Energy Production`, start = 1973, frequency = 1)
+tsHydro <- ts(data = df2$`Hydroelectric Power Consumption`, start = 1973, frequency = 1)
 acfBio <- acf(tsBio, lag.max = 40, type = "correlation",plot=TRUE)
 acfRE <- acf(tsRE, lag.max = 40, type = "correlation", plot=TRUE)
 acfHydro <- acf(tsHydro, lag.max = 40, type = "correlation", plot=TRUE)
