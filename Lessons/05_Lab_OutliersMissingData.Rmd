@@ -110,17 +110,28 @@ Additional info on decompose()
 
 ```{r}
 #Ex1: Using R decompose function decompose the wind data in seasonal, trend and random
+clean_wind_data <- as.numeric(clean_wind_data)
+clean_wind_data
+ts_clean_wind <- ts(clean_wind_data,frequency=12) 
 
+decompose_clean_wind=decompose(ts_clean_wind,"additive")
+
+plot(decompose_clean_wind)
 
 #Ex2: Store the three component in separate vector
-  
+
+decompose_trend = decompose_clean_wind$trend
+decompose_seas = decompose_clean_wind$seasonal
+decompose_rand = decompose_clean_wind$random
 
 #Ex3: Create one data frame with all three vector and the Date columns from wind_data
 
+df_wind_decomposed <- data.frame("Date" = full_wind_data$Date, "Trend" = decompose_trend, "Seasonal" = decompose_seas, "Random" = decompose_rand)
 
 #Ex4: Inspect the data frame using head() and tail()
 
-
+head(df_wind_decomposed,10)
+tail(df_wind_decomposed,10)
 
 # Discuss the results
 
