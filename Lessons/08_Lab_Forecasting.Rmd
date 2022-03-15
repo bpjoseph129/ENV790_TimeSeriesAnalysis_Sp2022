@@ -4,7 +4,7 @@ author: "Luana Lima"
 date: "03/02/2022"
 output: pdf_document
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ## Objectives
@@ -111,6 +111,7 @@ Ex1: Which models could be used to forecast the non-seasonal temperature series?
 
 ```{r}
 
+auto.arima(BR_Temp_ts_deseas)
 
 ```
 
