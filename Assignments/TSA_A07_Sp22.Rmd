@@ -109,9 +109,7 @@ Use the $auto.arima()$ command on the **deseasonalized series** to let R choose 
 ```
 
 
-### Q10
-
-Use the $auto.arima()$ command on the **original series** to let R choose the model parameters for you. Does it match what you specified in Q7?
+### Q10   
 
 ```{r}
 
