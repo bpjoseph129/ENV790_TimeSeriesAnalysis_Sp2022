@@ -5,7 +5,7 @@ date: "03/21/2022"
 output: pdf_document
 always_allow_html: true
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ## Setting R code chunk options
